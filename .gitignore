@@ -1,0 +1,9 @@
+log/
+log.DEV/
+log.STABLE/
+build/
+install/
+frp/
+go/
+go.work
+go.work.sum

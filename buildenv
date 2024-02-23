@@ -1,0 +1,114 @@
+# Update bump details accordingly. Use bump check to confirm.
+# bump: frp-version /FRP_VERSION="(.*)"/ https://github.com/fatedier/frp.git|semver:*
+
+FRP_VERSION="0.54.0" # Specify a stable release
+export ZOPEN_STABLE_TAG="v${FRP_VERSION}"
+export ZOPEN_STABLE_URL="https://github.com/fatedier/frp.git"
+export ZOPEN_STABLE_DEPS="comp_go git curl make"
+
+export ZOPEN_BUILD_LINE="STABLE"
+
+export ZOPEN_CATEGORIES="core"
+
+export ZOPEN_COMP=GO
+export ZOPEN_CONFIGURE="zopen_config"
+export ZOPEN_CONFIGURE_MINIMAL=1
+export ZOPEN_MAKE="zopen_build"
+export ZOPEN_INSTALL="zopen_install"
+export ZOPEN_CHECK="zopen_check"
+export ZOPEN_CLEAN="zopen_clean"
+
+zopen_init()
+{
+  echo "here-at-init $PWD"
+
+  export CGO_ENABLED=0
+  export GOTMPDIR=$PWD/go-tmpdir
+  mkdir -p $PWD/go-tmpdir
+  # Go installs binaries, so create the bin dir as well
+  export PATH=$PATH:$GOROOT/go-build-zos/bin
+  export GOBIN=$ZOPEN_INSTALL_DIR/bin
+  mkdir -p $ZOPEN_INSTALL_DIR/bin
+  unset CC CXX LDFLAGS LIBS
+}
+
+zopen_build()
+{
+  echo "here-at-build $PWD"
+
+  go version
+  #go build  
+
+  #cd cmd/frps
+  #echo "here-at-frps-build $PWD"
+  #go build
+  #cd ../..
+
+  #cd cmd/frpc
+  #echo "here-at-frpc-build $PWD"
+  #go build
+  #cd ../..
+
+  make
+}
+
+zopen_check()
+{
+  make test
+}
+
+zopen_config()
+{
+  echo "here-at-config $PWD"
+
+  cd .. && echo ""
+
+  go work init ./frp
+  cd frp
+}
+
+zopen_install()
+{
+  echo "here-at-install $PWD"
+  echo "GOBIN is $GOBIN"
+
+  mkdir -p $GOBIN # Not sure,what was the reason for $GOBIN direcotry deletion after init function
+ 
+  cd cmd/frps
+  echo "here-at-frps-install $PWD" 
+  go install
+  cd ../..
+  
+  cd cmd/frpc
+  echo "here-at-frpc-install $PWD"
+  go install
+  cd ../..
+}
+
+zopen_clean()
+{
+  echo "here-at-clean $PWD"
+
+  chmod -R 755 ../go
+  rm -rf ../go* ../go
+}
+
+zopen_check_results()
+{
+  dir="$1"
+  pfx="$2"
+  chk="$1/$2_check.log"
+
+  # Echo the following information to gauge build health
+  echo "actualFailures:0"
+  echo "totalTests:1"
+  echo "expectedFailures:0"
+  echo "expectedTotalTests:1"
+}
+
+zopen_get_version()
+{
+  # Modify to echo the version of your tool/library
+  # Rather than hardcoding the version, obtain the version by running the tool/library
+  echo "$FRP_VERSION"
+}
