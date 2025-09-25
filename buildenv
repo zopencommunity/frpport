@@ -1,7 +1,7 @@
 # Update bump details accordingly. Use bump check to confirm.
 # bump: frp-version /FRP_VERSION="(.*)"/ https://github.com/fatedier/frp.git|semver:*
 
-FRP_VERSION="0.61.1" # Specify a stable release
+FRP_VERSION="0.65.0" # Specify a stable release
 export ZOPEN_STABLE_TAG="v${FRP_VERSION}"
 export ZOPEN_STABLE_URL="https://github.com/fatedier/frp.git"
 export ZOPEN_STABLE_DEPS="check_go git curl make"
